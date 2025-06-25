@@ -13,18 +13,21 @@ create database workmates;
 
 --5 임시 데이터베이스 user, email. 
 CREATE TABLE USER (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nickname VARCHAR(50) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  user_id VARCHAR(255) NOT NULL PRIMARY KEY,       -- 사용자 아이디 (PK)
+  user_code INT NOT NULL UNIQUE,                   -- 사용자 코드 (고유값)
+  password VARCHAR(255) NOT NULL,                  -- 비밀번호
+  nickname VARCHAR(255) NOT NULL,                  -- 닉네임
+  group_name VARCHAR(255) NOT NULL,                -- 소속 (예약어 'group' 대신 'group_name' 사용)
+  position VARCHAR(255),                           -- 직책 (NULL 허용)
+  profile_description TEXT,                        -- 자기 소개 (멀티라인)
+  user_setting TEXT NOT NULL                       -- 유저 개인 설정 (멀티라인)
 );
 
 CREATE TABLE EMAIL (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  user_id INT NOT NULL,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES USER(id) ON DELETE CASCADE
+  user_id VARCHAR(255) NOT NULL,                   -- USER와의 관계 (FK)
+  email VARCHAR(255) NOT NULL UNIQUE,              -- 사용자 이메일
+  auth_token VARCHAR(255),                         -- 인증 토큰 (NULL 가능)
+
+  PRIMARY KEY (user_id),                           -- user_id 기준으로 1:1 관계
+  FOREIGN KEY (user_id) REFERENCES USER(user_id)   -- FK 제약
 );
